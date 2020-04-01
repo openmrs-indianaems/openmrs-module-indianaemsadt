@@ -1,0 +1,6 @@
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/Item.java
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/api/impl/IndianaemsadtServiceImpl.java
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/api/dao/IndianaemsadtDao.java
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/api/IndianaemsadtService.java
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/IndianaemsadtActivator.java
+/vagrant/indianaemsadt/api/src/main/java/org/openmrs/module/indianaemsadt/IndianaemsadtConfig.java
