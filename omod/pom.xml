@@ -29,6 +29,12 @@
 			<scope>provided</scope>
 			<classifier>tests</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>htmlformentry-api</artifactId>
+			<version>3.8.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
