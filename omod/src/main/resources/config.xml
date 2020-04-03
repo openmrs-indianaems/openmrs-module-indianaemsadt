@@ -28,22 +28,20 @@
 	<aware_of_modules>
 		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
 	</aware_of_modules>
+	<require_modules>
+  	<require_module version="3.8.0">org.openmrs.module.htmlformentry</require_module>
+	</require_modules>
+	
+<advice>
+<point>org.openmrs.api.PatientService</point>
+<class>org.openmrs.module.indianaemsadt.web.controller.AfterAdvice</class>
+</advice>
 	
 	
-	<!-- AOP
-	<advice>
-		<point>org.openmrs.api.FormService</point>
-		<class>@MODULE_PACKAGE@.advice.DuplicateFormAdvisor</class>
-	</advice>
-	 /AOP -->
-	
-	
-	<!-- Required Privileges 
 	<privilege>
 		<name>Form Entry</name>
 		<description>Allows user to access Form Entry pages/functions</description>
 	</privilege>
-	 /Required Privileges -->
 
 
 	<!-- Required Global Properties 

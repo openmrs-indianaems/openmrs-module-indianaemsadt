@@ -1,2 +1,2 @@
-org/openmrs/module/indianaemsadt/api/dao/IndianaemsadtDaoTest.class
-org/openmrs/module/indianaemsadt/api/IndianaemsadtServiceTest.class
+org/openmrs/module/indianaemsadt/dao/IndianaemsadtDaoTest.class
+org/openmrs/module/indianaemsadt/IndianaemsadtServiceTest.class
