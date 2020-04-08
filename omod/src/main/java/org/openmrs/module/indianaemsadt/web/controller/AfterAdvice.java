@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -25,6 +26,7 @@ import ca.uhn.hl7v2.model.v25.message.ADT_A01;
 import ca.uhn.hl7v2.model.v25.segment.MSH;
 import ca.uhn.hl7v2.model.v25.segment.PID;
 import ca.uhn.hl7v2.parser.GenericParser;
+import ca.uhn.hl7v2.parser.PipeParser;
 
 public class AfterAdvice implements AfterReturningAdvice {
 	
@@ -57,10 +59,10 @@ public class AfterAdvice implements AfterReturningAdvice {
 	}
 	
 	public String getMessage(ADT_A01 adt) {
-		GenericParser parser = new GenericParser();
+		PipeParser parser = new PipeParser();
 		String msg = null;
 		try {
-			msg = parser.encode(adt, "XML");
+			msg = parser.encode(adt);
 		}
 		catch (HL7Exception e) {}
 		return msg;
@@ -82,8 +84,10 @@ public class AfterAdvice implements AfterReturningAdvice {
 			msh.getVersionID().getInternationalizationCode().getIdentifier().setValue(Constants.INTERNATIONALIZATION_CODE);
 			msh.getVersionID().getVersionID().setValue(Constants.VERSION);
 			msh.getDateTimeOfMessage().getTime().setValue(formattedDate);
-			msh.getSendingFacility().getNamespaceID()
-			        .setValue(Context.getAdministrationService().getGlobalProperty("rheashradapter.sendingFaculty"));
+			
+			Location location = Context.getLocationService().getLocation(Context.getUserContext().getLocationId());
+			msh.getSendingFacility().getNamespaceID().setValue(location.getName());
+			msh.getSendingApplication().getNamespaceID().setValue(Constants.SENDING_APPLICATION);
 			msh.getMessageType().getMessageCode().setValue(Constants.MESSAGE_TYPE);
 			msh.getMessageType().getTriggerEvent().setValue(Constants.TRIGGER_EVENT);
 			msh.getMessageType().getMessageStructure().setValue(Constants.MESSAGE_STRUCTURE);
@@ -106,11 +110,10 @@ public class AfterAdvice implements AfterReturningAdvice {
 			Patient patient = (Patient) person;
 			
 			PID pid = adt.getPID();
-			pid.getPatientName(0).getGivenName().setValue("waka waka");
 			//PatientIdentifier patientIdentifier = patient.getPatientIdentifier(Constants.IDENTIFIER_TYPE);
 			
-			//pid.getPatientIdentifierList(0).getIDNumber().setValue(patientIdentifier.getIdentifier());
-			//pid.getPatientIdentifierList(0).getIdentifierTypeCode().setValue(Constants.IDENTIFIER_TYPE);
+			pid.getPatientIdentifierList(0).getIDNumber().setValue(Integer.toString(patient.getId()));
+			pid.getPatientIdentifierList(0).getIdentifierTypeCode().setValue(Constants.IDENTIFIER_TYPE);
 			
 			pid.getPatientName(0).getFamilyName().getSurname().setValue(patient.getFamilyName());
 			pid.getPatientName(0).getGivenName().setValue(patient.getGivenName());
@@ -135,11 +138,11 @@ public class AfterAdvice implements AfterReturningAdvice {
 				i = i + 1;
 			}
 			
-			//PersonAttribute personAttribute = person.getAttribute(Constants.TEL);
-			//pid.getPhoneNumberHome(0).getTelephoneNumber().setValue(personAttribute.getValue());
+			PersonAttribute personAttribute = patient.getAttribute(Constants.TEL);
+			pid.getPhoneNumberHome(0).getTelephoneNumber().setValue(personAttribute.getValue());
 			
-			//personAttribute = person.getAttribute(Constants.SSN);
-			//pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
+			personAttribute = person.getAttribute(Constants.SSN);
+			pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
 			adt.getPV1();
 		}
 		catch (Exception e) {
