@@ -35,7 +35,7 @@ public class Constants {
 	
 	public static final String RECEIVING_FACILITY = "INPC";
 	
-	public static final String SENDING_APPLICATION = "sendingApplication";
+	public static final String SENDING_APPLICATION = "REG";
 	
 	public static final String RECEIVING_APPLICATION = "receivingApplication";
 	
@@ -57,7 +57,7 @@ public class Constants {
 	
 	// PID
 	
-	public static final String IDENTIFIER_TYPE = "ECID";
+	public static final String IDENTIFIER_TYPE = "MR";
 	
 	public static final String IDPID = "1";
 	
