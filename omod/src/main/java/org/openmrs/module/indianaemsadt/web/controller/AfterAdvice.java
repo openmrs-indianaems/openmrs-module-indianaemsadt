@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.springframework.aop.AfterReturningAdvice;
 
 import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.HapiContext;
 import ca.uhn.hl7v2.model.v25.message.ADT_A01;
 import ca.uhn.hl7v2.model.v25.segment.MSH;
 import ca.uhn.hl7v2.model.v25.segment.PID;
@@ -34,6 +35,8 @@ public class AfterAdvice implements AfterReturningAdvice {
 	
 	private int count = 0;
 	
+	private HapiContext ctx;
+	
 	public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
 		if (method.getName().equals("savePatient")) {
 			log.debug("Method: " + method.getName() + ". After advice called " + (++count) + " time(s) now.");
@@ -41,7 +44,6 @@ public class AfterAdvice implements AfterReturningAdvice {
 			
 			ADT_A01 adt = generateADT(patient);
 			String resp = getMessage(adt);
-			System.out.println(resp);
 			
 			Obs o = new Obs();
 			
@@ -57,6 +59,30 @@ public class AfterAdvice implements AfterReturningAdvice {
 			
 		}
 	}
+	
+	/* public void post(ADT_A01 adt) {
+		try {
+			ctx = new DefaultHapiContext();
+			
+			// create a new MLLP client over the specified port
+			Connection connection = ctx.newClient("192.135.196.24", Constants.PORT_NUMBER, false);
+			
+			// The initiator which will be used to transmit our message
+			Initiator initiator = connection.getInitiator();
+			
+			// send the previously created HL7 message over the connection established
+			Message response = initiator.sendAndReceive(adt);
+			
+			// display the message response received from the remote party
+			PipeParser parser = new PipeParser();
+			String responseString = parser.encode(response);
+			System.out.println("Received response:\n" + responseString);
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	} */
 	
 	public String getMessage(ADT_A01 adt) {
 		PipeParser parser = new PipeParser();
@@ -112,6 +138,7 @@ public class AfterAdvice implements AfterReturningAdvice {
 			PID pid = adt.getPID();
 			//PatientIdentifier patientIdentifier = patient.getPatientIdentifier(Constants.IDENTIFIER_TYPE);
 			
+			pid.getSetIDPID().setValue(Integer.toString(1));
 			pid.getPatientIdentifierList(0).getIDNumber().setValue(Integer.toString(patient.getId()));
 			pid.getPatientIdentifierList(0).getIdentifierTypeCode().setValue(Constants.IDENTIFIER_TYPE);
 			
@@ -143,7 +170,10 @@ public class AfterAdvice implements AfterReturningAdvice {
 			
 			personAttribute = person.getAttribute(Constants.SSN);
 			pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
+			
 			adt.getPV1();
+			
+			//post(adt);
 		}
 		catch (Exception e) {
 			

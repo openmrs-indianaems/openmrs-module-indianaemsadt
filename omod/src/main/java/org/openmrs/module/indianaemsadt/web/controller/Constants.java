@@ -27,7 +27,7 @@ public class Constants {
 	
 	public static final String VERSION = "2.5";
 	
-	public static final String PROCESSING_ID = "D";
+	public static final String PROCESSING_ID = "P";
 	
 	public static final String PROCESSING_MODE = "C";
 	
@@ -44,6 +44,8 @@ public class Constants {
 	public static final String APPLICATION_ACK_TYPE = "";
 	
 	public static final String MSG_PROFILE_IDENTIFIER = "CLSM_V0.83";
+	
+	public static final int PORT_NUMBER = 9159;
 	
 	//ORC
 	
