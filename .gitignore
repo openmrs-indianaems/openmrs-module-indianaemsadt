@@ -1,15 +1,24 @@
-omod/target/*
-api/target/*
-target/*
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
+# Copied from https://github.com/github/gitignore
 
-# IntelliJ files
-.idea
+### Maven ###
+target/
+#############
+
+### Java ###
+*.class
+
+# Java Package Files #
+*.jar
+*.war
+*.ear
+############
+
+### IntelliJ Idea ###
 *.iml
+*.ipr
+*.iws
+.idea/
+#####################
 
 ### Eclipse ###
 *.pydevproject
@@ -27,5 +36,40 @@ local.properties
 .settings/
 .loadpath
 
-# Mac OS files
-.DS_Store
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+###############
+
+### Netbeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+################
+
+### Linux ###
+!.gitignore
+!.gitattributes
+*~
+#############
+
+### npm owa ###
+owa/node_modules
+owa/dist
+owa/config.json
+owa/node
+owa/*.zip
+owa/etc
+###########
