@@ -1,6 +1,6 @@
-omod/target/
-api/target/
-target/
+omod/target/*
+api/target/*
+target/*
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
