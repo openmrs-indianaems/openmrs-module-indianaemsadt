@@ -29,7 +29,6 @@ import ca.uhn.hl7v2.HapiContext;
 import ca.uhn.hl7v2.model.v25.message.ADT_A01;
 import ca.uhn.hl7v2.model.v25.segment.MSH;
 import ca.uhn.hl7v2.model.v25.segment.PID;
-import ca.uhn.hl7v2.parser.GenericParser;
 import ca.uhn.hl7v2.parser.PipeParser;
 
 public class AfterAdvice implements AfterReturningAdvice {
@@ -75,16 +74,19 @@ public class AfterAdvice implements AfterReturningAdvice {
 			String destinationServer = System.getenv(Constants.HL7_URL);
 			int destinationPort = Integer.parseInt(System.getenv(Constants.HL7_PORT));
 			
-			ctx = new DefaultHapiContext();
+			HapiContext ctx = new DefaultHapiContext();
 			
 			// create a new MLLP client over the specified port
 			Connection connection = ctx.newClient(destinationServer, destinationPort, false);
 			
-			// The initiator which will be used to transmit our message
+			// the initiator which will be used to transmit our message
 			Initiator initiator = connection.getInitiator();
 			
 			// send the previously created HL7 message over the connection established
 			Message response = initiator.sendAndReceive(adt);
+			
+			// clean up
+			connection.close();
 			
 			// display the message response received from the remote party
 			if (log.isDebugEnabled()) {
