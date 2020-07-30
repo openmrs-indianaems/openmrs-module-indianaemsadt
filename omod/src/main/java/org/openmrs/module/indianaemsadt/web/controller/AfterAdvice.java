@@ -6,15 +6,18 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
+import ca.uhn.hl7v2.DefaultHapiContext;
+import ca.uhn.hl7v2.app.Connection;
+import ca.uhn.hl7v2.app.Initiator;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.v25.segment.PV1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -39,33 +42,43 @@ public class AfterAdvice implements AfterReturningAdvice {
 	
 	public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
 		if (method.getName().equals("savePatient")) {
-			log.debug("Method: " + method.getName() + ". After advice called " + (++count) + " time(s) now.");
 			Patient patient = (Patient) returnValue;
 			
 			ADT_A01 adt = generateADT(patient);
-			String resp = getMessage(adt);
+			String adtAsString = getMessage(adt);
+			if (log.isDebugEnabled()) {
+				log.debug("Sending ADT: " + adtAsString);
+			}
 			
+			// Create an observation containing ADT messsage for backup
+			String adtObsConceptUuid = Context.getAdministrationService().getGlobalProperty(
+			    Constants.ADT_OBS_CONCEPT_GLOBAL_PROPERTY);
+			if (adtObsConceptUuid == null)
+				adtObsConceptUuid = Constants.DEFAULT_ADT_OBS_CONCEPT;
+			Concept concept = Context.getConceptService().getConceptByUuid(adtObsConceptUuid);
 			Obs o = new Obs();
-			
-			Concept concept = Context.getConceptService().getConcept(162725);
 			o.setPerson(patient);
-			//o.setEncounter(new Encounter());
 			o.setConcept(concept);
 			o.setDateCreated(new Date());
 			o.setCreator(Context.getAuthenticatedUser());
 			o.setObsDatetime(new Date());
-			o.setValueText(resp);
+			o.setValueText(adtAsString);
 			Context.getObsService().saveObs(o, "ADT");
 			
+			// Send ADT to HL7 destination
+			post(adt);
 		}
 	}
 	
-	/* public void post(ADT_A01 adt) {
+	public void post(ADT_A01 adt) {
 		try {
+			String destinationServer = System.getenv(Constants.HL7_URL);
+			int destinationPort = Integer.parseInt(System.getenv(Constants.HL7_PORT));
+			
 			ctx = new DefaultHapiContext();
 			
 			// create a new MLLP client over the specified port
-			Connection connection = ctx.newClient("192.135.196.24", Constants.PORT_NUMBER, false);
+			Connection connection = ctx.newClient(destinationServer, destinationPort, false);
 			
 			// The initiator which will be used to transmit our message
 			Initiator initiator = connection.getInitiator();
@@ -74,15 +87,16 @@ public class AfterAdvice implements AfterReturningAdvice {
 			Message response = initiator.sendAndReceive(adt);
 			
 			// display the message response received from the remote party
-			PipeParser parser = new PipeParser();
-			String responseString = parser.encode(response);
-			System.out.println("Received response:\n" + responseString);
-			
+			if (log.isDebugEnabled()) {
+				PipeParser parser = new PipeParser();
+				String responseString = parser.encode(response);
+				log.debug("ADT response: " + responseString);
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	} */
+	}
 	
 	public String getMessage(ADT_A01 adt) {
 		PipeParser parser = new PipeParser();
@@ -90,7 +104,9 @@ public class AfterAdvice implements AfterReturningAdvice {
 		try {
 			msg = parser.encode(adt);
 		}
-		catch (HL7Exception e) {}
+		catch (HL7Exception e) {
+			log.error(e);
+		}
 		return msg;
 	}
 	
@@ -166,17 +182,19 @@ public class AfterAdvice implements AfterReturningAdvice {
 			}
 			
 			PersonAttribute personAttribute = patient.getAttribute(Constants.TEL);
-			pid.getPhoneNumberHome(0).getTelephoneNumber().setValue(personAttribute.getValue());
+			if (personAttribute != null)
+				pid.getPhoneNumberHome(0).getTelephoneNumber().setValue(personAttribute.getValue());
 			
 			personAttribute = person.getAttribute(Constants.SSN);
-			pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
+			if (personAttribute != null)
+				pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
 			
-			adt.getPV1();
-			
-			//post(adt);
+			PV1 pv1 = adt.getPV1();
+			pv1.getSetIDPV1().setValue(Constants.IDPV1);
+			pv1.getPatientClass().setValue(Constants.PATIENT_CLASS);
 		}
 		catch (Exception e) {
-			
+			log.error(e);
 		}
 		return adt;
 	}

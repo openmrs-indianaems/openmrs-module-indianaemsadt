@@ -11,6 +11,19 @@ package org.openmrs.module.indianaemsadt.web.controller;
 
 public class Constants {
 	
+	// Env settings
+	
+	public static final String HL7_URL = "HL7_URL";
+	
+	public static final String HL7_PORT = "HL7_PORT";
+	
+	// ADT observation
+	
+	public static final String ADT_OBS_CONCEPT_GLOBAL_PROPERTY = "indianaemsadt.adtObsConceptUuid";
+	
+	// Default to CIEL's General Patient Note concept that ships with RefApp
+	public static final String DEFAULT_ADT_OBS_CONCEPT = "165095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	
 	// MSH
 	
 	public static final String FIELD_SEPARATOR = "|";
@@ -45,8 +58,6 @@ public class Constants {
 	
 	public static final String MSG_PROFILE_IDENTIFIER = "CLSM_V0.83";
 	
-	public static final int PORT_NUMBER = 9159;
-	
 	//ORC
 	
 	public static final String ORDER_CONTROL = "RE";
@@ -55,7 +66,7 @@ public class Constants {
 	
 	public static final String IDPV1 = "1";
 	
-	public static final String PATIENT_CLASS = "0";
+	public static final String PATIENT_CLASS = "O";
 	
 	// PID
 	
