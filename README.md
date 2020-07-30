@@ -1,30 +1,28 @@
-${moduleName}
+indianaemsadt module
 ==========================
 
 Description
 -----------
-This is a very basic module which can be used as a starting point in creating a new module.
+A module designed to send an ADT^A01 event to an HL7 v2 MLLP endpoint (i.e., HIE)
+whenever a patient is registered in OpenMRS. This module was created as part of
+Regenstrief, Indy EMS, and IHIE's collaboration on creating a system for Indy EMS
+as part of their response to the COVID-19 pandemic in 2020.
 
 Building from Source
 --------------------
-You will need to have Java 1.6+ and Maven 2.x+ installed.  Use the command 'mvn package' to 
-compile and package the module.  The .omod file will be in the omod/target folder.
-
-Alternatively you can add the snippet provided in the [Creating Modules](https://wiki.openmrs.org/x/cAEr) page to your 
-omod/pom.xml and use the mvn command:
-
-    mvn package -P deploy-web -D deploy.path="../../openmrs-1.8.x/webapp/src/main/webapp"
-
-It will allow you to deploy any changes to your web 
-resources such as jsp or js files without re-installing the module. The deploy path says 
-where OpenMRS is deployed.
+You will need to have Java 1.8+ and Maven 3.x+ installed.  Use the command 'mvn package' to 
+compile and package the module. The .omod file will be in the omod/target folder.
 
 Installation
 ------------
 1. Build the module to produce the .omod file.
-2. Use the OpenMRS Administration > Manage Modules screen to upload and install the .omod file.
+2. Use the OpenMRS Reference Application 2.10+ `Administration` > `Manage Modules` screen to 
+upload and install the .omod file.
 
-If uploads are not allowed from the web (changable via a runtime property), you can drop the omod
-into the ~/.OpenMRS/modules folder.  (Where ~/.OpenMRS is assumed to be the Application 
-Data Directory that the running openmrs is currently using.)  After putting the file in there 
-simply restart OpenMRS/tomcat and the module will be loaded and started.
+Environment
+-----------
+This module sends ADT^A01 messages to an HL7 server using MLLP and expects the following 
+environment variables to be defined:
+
+* `HL7_URL` (default "localhost") MLLP destination for ADT^A01 messages
+* `HL7_PORT` (default "6661") port used at `HL7_URL` for recieving messages

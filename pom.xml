@@ -10,17 +10,22 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>indianaemsadt</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
-	<name>Indianaemsadt</name>
-	<description>no description</description>
+	<name>Indianapolis EMS ADT</name>
+	<description>
+		A module designed to send an ADT^A01 event to an HL7 v2 MLLP endpoint (i.e., HIE)
+		whenever a patient is registered in OpenMRS. This module was created as part of
+		Regenstrief, Indy EMS, and IHIE's collaboration on creating a system for Indy EMS
+		as part of their response to the COVID-19 pandemic in 2020.
+	</description>
 
-	<url>https://wiki.openmrs.org/x/FQ4z</url>
+	<url>https://github.com/openmrs-indianaems/openmrs-module-indianaemsadt</url>
 
 	<scm>
-		<connection>scm:git:git@github.com:openmrs/openmrs-module-indianaemsadt.git</connection>
-		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-indianaemsadt.git</developerConnection>
-		<url>https://github.com/openmrs/openmrs-module-indianaemsadt/</url>
+		<connection>scm:git:git@github.com:openmrs-indianaems/openmrs-module-indianaemsadt.git</connection>
+		<developerConnection>scm:git:git@github.com:openmrs-indianaems/openmrs-module-indianaemsadt.git</developerConnection>
+		<url>https://github.com/openmrs-indianaems/openmrs-module-indianaemsadt/</url>
 	</scm>
 
 	<modules>
@@ -53,6 +58,6 @@
 	</pluginRepositories>
 
     <properties>
-        <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
+        <openmrsPlatformVersion>2.3.0</openmrsPlatformVersion>
     </properties>
 </project>
