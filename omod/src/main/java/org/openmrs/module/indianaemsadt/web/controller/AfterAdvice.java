@@ -10,6 +10,7 @@ import ca.uhn.hl7v2.DefaultHapiContext;
 import ca.uhn.hl7v2.app.Connection;
 import ca.uhn.hl7v2.app.Initiator;
 import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.v25.segment.EVN;
 import ca.uhn.hl7v2.model.v25.segment.PV1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -143,6 +144,9 @@ public class AfterAdvice implements AfterReturningAdvice {
 			msh.getAcceptAcknowledgmentType().setValue(Constants.ACK_TYPE);
 			msh.getApplicationAcknowledgmentType().setValue(Constants.APPLICATION_ACK_TYPE);
 			msh.getMessageProfileIdentifier(0).getEntityIdentifier().setValue(Constants.MSG_PROFILE_IDENTIFIER);
+			
+			EVN evn = adt.getEVN();
+			evn.getRecordedDateTime().getTs1_Time().setValue(new Date());
 			
 			Cohort singlePatientCohort = new Cohort();
 			//System.out.println(Context.getPatientService().getAllPatients());
