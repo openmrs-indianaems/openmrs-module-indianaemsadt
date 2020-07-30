@@ -75,6 +75,8 @@ public class AfterAdvice implements AfterReturningAdvice {
 		String responseString;
 		
 		String destinationServer = System.getenv(Constants.HL7_URL_ENV_VARIABLE);
+		if (destinationServer == null)
+			destinationServer = Constants.DEFAULT_HL7_URL;
 		int destinationPort;
 		try {
 			destinationPort = Integer.parseInt(System.getenv(Constants.HL7_PORT_ENV_VARIABLE));
