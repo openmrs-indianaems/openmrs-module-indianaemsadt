@@ -138,7 +138,6 @@ public class AfterAdvice implements AfterReturningAdvice {
 			msh.getMessageType().getMessageStructure().setValue(Constants.MESSAGE_STRUCTURE);
 			msh.getReceivingFacility().getNamespaceID().setValue(Constants.RECEIVING_FACILITY);
 			msh.getProcessingID().getProcessingID().setValue(Constants.PROCESSING_ID);
-			msh.getProcessingID().getProcessingMode().setValue(Constants.PROCESSING_MODE);
 			msh.getMessageControlID().setValue(UUID.randomUUID().toString());
 			
 			msh.getAcceptAcknowledgmentType().setValue(Constants.ACK_TYPE);

@@ -34,15 +34,13 @@ public class Constants {
 	
 	public static final String TRIGGER_EVENT = "A01";
 	
-	public static final String MESSAGE_STRUCTURE = "ADT_AO1";
+	public static final String MESSAGE_STRUCTURE = "ADT_A01";
 	
 	public static final String INTERNATIONALIZATION_CODE = "USA";
 	
 	public static final String VERSION = "2.5";
 	
 	public static final String PROCESSING_ID = "P";
-	
-	public static final String PROCESSING_MODE = "C";
 	
 	public static final String SENDING_FACILITY = "Sender";
 	
