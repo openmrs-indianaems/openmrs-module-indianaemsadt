@@ -71,9 +71,20 @@ public class AfterAdvice implements AfterReturningAdvice {
 	}
 	
 	public void post(ADT_A01 adt) {
+		
+		String destinationServer = System.getenv(Constants.HL7_URL_ENV_VARIABLE);
+		int destinationPort;
 		try {
-			String destinationServer = System.getenv(Constants.HL7_URL);
-			int destinationPort = Integer.parseInt(System.getenv(Constants.HL7_PORT));
+			destinationPort = Integer.parseInt(System.getenv(Constants.HL7_PORT_ENV_VARIABLE));
+		}
+		catch (Exception e) {
+			destinationPort = Constants.DEFAULT_HL7_PORT;
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("Sending ADT to " + destinationServer + ":" + destinationPort);
+		}
+		
+		try {
 			
 			HapiContext ctx = new DefaultHapiContext();
 			

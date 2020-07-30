@@ -13,9 +13,13 @@ public class Constants {
 	
 	// Env settings
 	
-	public static final String HL7_URL = "HL7_URL";
+	public static final String HL7_URL_ENV_VARIABLE = "HL7_URL";
 	
-	public static final String HL7_PORT = "HL7_PORT";
+	public static final String DEFAULT_HL7_URL = "localhost";
+	
+	public static final String HL7_PORT_ENV_VARIABLE = "HL7_PORT";
+	
+	public static final int DEFAULT_HL7_PORT = 6661;
 	
 	// ADT observation
 	
