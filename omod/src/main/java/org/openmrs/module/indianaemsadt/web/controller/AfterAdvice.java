@@ -50,6 +50,9 @@ public class AfterAdvice implements AfterReturningAdvice {
 				log.debug("Sending ADT: " + adtAsString);
 			}
 			
+			// Send ADT to HL7 destination
+			String response = post(adt);
+			
 			// Create an observation containing ADT messsage for backup
 			String adtObsConceptUuid = Context.getAdministrationService().getGlobalProperty(
 			    Constants.ADT_OBS_CONCEPT_GLOBAL_PROPERTY);
@@ -62,15 +65,14 @@ public class AfterAdvice implements AfterReturningAdvice {
 			o.setDateCreated(new Date());
 			o.setCreator(Context.getAuthenticatedUser());
 			o.setObsDatetime(new Date());
-			o.setValueText(adtAsString);
+			o.setValueText(adtAsString + "\n---\n" + response);
 			Context.getObsService().saveObs(o, "ADT");
-			
-			// Send ADT to HL7 destination
-			post(adt);
 		}
 	}
 	
-	public void post(ADT_A01 adt) {
+	public String post(ADT_A01 adt) {
+		
+		String responseString;
 		
 		String destinationServer = System.getenv(Constants.HL7_URL_ENV_VARIABLE);
 		int destinationPort;
@@ -97,19 +99,20 @@ public class AfterAdvice implements AfterReturningAdvice {
 			// send the previously created HL7 message over the connection established
 			Message response = initiator.sendAndReceive(adt);
 			
+			PipeParser parser = new PipeParser();
+			responseString = parser.encode(response);
+			log.debug("ADT response: " + responseString);
+			
 			// clean up
 			connection.close();
 			
-			// display the message response received from the remote party
-			if (log.isDebugEnabled()) {
-				PipeParser parser = new PipeParser();
-				String responseString = parser.encode(response);
-				log.debug("ADT response: " + responseString);
-			}
 		}
 		catch (Exception e) {
+			responseString = "Error: " + e.getMessage();
 			e.printStackTrace();
 		}
+		
+		return responseString;
 	}
 	
 	public String getMessage(ADT_A01 adt) {
