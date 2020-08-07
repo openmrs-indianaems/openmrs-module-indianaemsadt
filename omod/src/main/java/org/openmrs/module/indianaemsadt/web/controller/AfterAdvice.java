@@ -195,7 +195,7 @@ public class AfterAdvice implements AfterReturningAdvice {
 			
 			int i = 0;
 			for (PersonAddress address : addresses) {
-				pid.getPatientAddress(i).getStreetAddress().getStreetName().setValue(address.getAddress1());
+				pid.getPatientAddress(i).getStreetAddress().parse(address.getAddress1());
 				pid.getPatientAddress(i).getCity().setValue(address.getCityVillage());
 				pid.getPatientAddress(i).getZipOrPostalCode().setValue(address.getPostalCode());
 				pid.getPatientAddress(i).getStateOrProvince().setValue(address.getStateProvince());
