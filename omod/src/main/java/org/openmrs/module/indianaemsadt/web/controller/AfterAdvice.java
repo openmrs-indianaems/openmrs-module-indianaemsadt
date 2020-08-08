@@ -191,6 +191,8 @@ public class AfterAdvice implements AfterReturningAdvice {
 			PV1 pv1 = adt.getPV1();
 			pv1.getSetIDPV1().setValue(Constants.IDPV1);
 			pv1.getPatientClass().setValue(Constants.PATIENT_CLASS);
+			pv1.getAssignedPatientLocation().getPointOfCare().setValue(location.getName());
+			pv1.getAssignedPatientLocation().getPersonLocationType().setValue(Constants.PERSON_LOCATION_TYPE);
 			
 		}
 		catch (Exception e) {
