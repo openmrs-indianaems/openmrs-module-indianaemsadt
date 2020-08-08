@@ -71,7 +71,7 @@ public class Constants {
 	public static final String PATIENT_CLASS = "O";
 	
 	public static final String PERSON_LOCATION_TYPE = "C";
-
+	
 	// PID
 	
 	public static final String IDENTIFIER_TYPE = "OpenMRS ID";
