@@ -14,14 +14,7 @@ import ca.uhn.hl7v2.model.v25.segment.EVN;
 import ca.uhn.hl7v2.model.v25.segment.PV1;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Cohort;
-import org.openmrs.Concept;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.PersonAddress;
-import org.openmrs.PersonAttribute;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.springframework.aop.AfterReturningAdvice;
 
@@ -34,11 +27,7 @@ import ca.uhn.hl7v2.parser.PipeParser;
 
 public class AfterAdvice implements AfterReturningAdvice {
 	
-	private Log log = LogFactory.getLog(this.getClass());
-	
-	private int count = 0;
-	
-	private HapiContext ctx;
+	private final Log log = LogFactory.getLog(this.getClass());
 	
 	public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
 		if (method.getName().equals("savePatient")) {
@@ -53,7 +42,7 @@ public class AfterAdvice implements AfterReturningAdvice {
 			// Send ADT to HL7 destination
 			String response = post(adt);
 			
-			// Create an observation containing ADT messsage for backup
+			// Create an observation containing ADT message for backup
 			String adtObsConceptUuid = Context.getAdministrationService().getGlobalProperty(
 			    Constants.ADT_OBS_CONCEPT_GLOBAL_PROPERTY);
 			if (adtObsConceptUuid == null)
@@ -129,7 +118,7 @@ public class AfterAdvice implements AfterReturningAdvice {
 		return msg;
 	}
 	
-	public ADT_A01 generateADT(Person person) {
+	public ADT_A01 generateADT(Patient patient) {
 		ADT_A01 adt = new ADT_A01();
 		try {
 			
@@ -163,28 +152,17 @@ public class AfterAdvice implements AfterReturningAdvice {
 			EVN evn = adt.getEVN();
 			evn.getRecordedDateTime().getTs1_Time().setValue(new Date());
 			
-			Cohort singlePatientCohort = new Cohort();
-			//System.out.println(Context.getPatientService().getAllPatients());
-			singlePatientCohort.addMember(person.getId());
-			
-			//Map<Integer, String> patientIdentifierMap = Context.getPatientService().getPatientIdentifierByUuid(arg0);
-			//Map<Integer, String> patientIdentifierMap = Context.getPatientSetService().getPatientIdentifierStringsByType(singlePatientCohort, Context.getPatientService().getPatientIdentifierTypeByName(Constants.IDENTIFIER_TYPE));
-			
-			Patient patient = (Patient) person;
-			
 			PID pid = adt.getPID();
-			//PatientIdentifier patientIdentifier = patient.getPatientIdentifier(Constants.IDENTIFIER_TYPE);
-			
-			pid.getSetIDPID().setValue(Integer.toString(1));
-			pid.getPatientIdentifierList(0).getIDNumber().setValue(Integer.toString(patient.getId()));
-			pid.getPatientIdentifierList(0).getIdentifierTypeCode().setValue(Constants.IDENTIFIER_TYPE);
+			PatientIdentifier patientIdentifier = patient.getPatientIdentifier(Constants.IDENTIFIER_TYPE);
+			pid.getSetIDPID().setValue(patientIdentifier.getIdentifier());
+			pid.getPatientAccountNumber().getIDNumber().setValue(patientIdentifier.getIdentifier());
 			
 			pid.getPatientName(0).getFamilyName().getSurname().setValue(patient.getFamilyName());
 			pid.getPatientName(0).getGivenName().setValue(patient.getGivenName());
 			pid.getPatientName(0).getSecondAndFurtherGivenNamesOrInitialsThereof().setValue(patient.getMiddleName());
 			
 			// dob
-			Date dob = person.getBirthdate();
+			Date dob = patient.getBirthdate();
 			String dobStr = "";
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			dobStr = sdf.format(dob);
@@ -206,13 +184,14 @@ public class AfterAdvice implements AfterReturningAdvice {
 			if (personAttribute != null)
 				pid.getPhoneNumberHome(0).getTelephoneNumber().setValue(personAttribute.getValue());
 			
-			personAttribute = person.getAttribute(Constants.SSN);
+			personAttribute = patient.getAttribute(Constants.SSN);
 			if (personAttribute != null)
 				pid.getPid19_SSNNumberPatient().setValue(personAttribute.getValue());
 			
 			PV1 pv1 = adt.getPV1();
 			pv1.getSetIDPV1().setValue(Constants.IDPV1);
 			pv1.getPatientClass().setValue(Constants.PATIENT_CLASS);
+			
 		}
 		catch (Exception e) {
 			log.error(e);

@@ -72,7 +72,7 @@ public class Constants {
 	
 	// PID
 	
-	public static final String IDENTIFIER_TYPE = "MR";
+	public static final String IDENTIFIER_TYPE = "OpenMRS ID";
 	
 	public static final String IDPID = "1";
 	
